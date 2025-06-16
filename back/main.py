@@ -105,3 +105,6 @@ def generate_novel_continue():
         return jsonify({'novel': generated_text}), 200
     except:
         return jsonify({'status':'error','message':'生成出错！请检查 OpenAI API 配置并重试。'}), 500
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
