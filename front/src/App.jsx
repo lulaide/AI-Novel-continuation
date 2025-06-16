@@ -150,7 +150,7 @@ function App() {
       const data = await response.json();
 
       if (response.ok && data.novel) {
-        setNovelContent(prev => prev + data.novel); // 拼接续写内容到原内容后面
+        setNovelContent(prev => prev + '\n\n' + data.novel); // 拼接续写内容到原内容后面
         // setSelectedEnding(''); // Optional: clear selected ending after use
         // setBaseNovelForEndings(data.novel); // Update base for potential further continuations from this new state
                                             // Or, user might want to generate new endings for data.novel

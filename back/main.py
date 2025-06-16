@@ -30,7 +30,7 @@ def set_openai_api_key():
                 {"role": "user", "content": "Connection test. Please respond with 'Connection successful'."},
             ],
             max_tokens=1024,
-            temperature=0.8,
+            temperature=0.5,
             stream=False
         )
 
@@ -81,7 +81,7 @@ def generate_novel_endings():
                 {"role": "user", "content": full_prompt},
             ],
             max_tokens=8192,
-            temperature=0.8,
+            temperature=0.5,
             stream=False
         )
         print('结局生成完成！')
@@ -120,7 +120,7 @@ def generate_novel_continue():
                 {"role": "user", "content": full_prompt},
             ],
             max_tokens=8192,
-            temperature=0.8,
+            temperature=0.5,
             stream=False
         )
         print('小说段落生成完成！')
