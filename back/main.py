@@ -3,6 +3,7 @@ import os
 from flask import Flask, request, jsonify, session, json
 import openai
 
+
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
@@ -21,12 +22,11 @@ def set_openai_api_key():
             base_url=session['baseUrl'],
             api_key=session['api_key'],
         )
-        client.responses.create(
-            model=session['model'],
-            input="Test connection",
-        )
+        # Attempt to list models to verify the connection and credentials
+        client.models.list()
         return jsonify({'status': 'success'}), 200
-    except:
+    except Exception as e:
+        print(f"Error testing OpenAI connection: {e}")
         return jsonify({'status': 'error', 'message': '无效的 OpenAI API 配置。请检查 baseUrl、model 和 apiKey 是否正确。'}), 400
 
 @app.route('/api/v1/novel/endings', methods=['POST'])
@@ -35,11 +35,11 @@ def generate_novel_endings():
     if not data or 'content' not in data:
         return jsonify({'status':'error','message':'内容不能为空或格式不正确。请提供有效的小说内容。'}), 400
 
-    if 'api_key' not in session or 'base_url' not in session or 'model' not in session:
+    if 'api_key' not in session or 'baseUrl' not in session or 'model' not in session:
         return jsonify({'status':'error','message':'未配置 OpenAI API'}), 401
 
     api_key = session.get('api_key')
-    base_url = session.get('base_url')
+    base_url = session.get('baseUrl')
     model = session.get('model')
 
     prompt_instructions = """请为以上文本生成4个不同的结局。每个结局都应有独特的情节和风格。
@@ -81,11 +81,11 @@ def generate_novel_continue():
     if not data or 'content' not in data or 'ending' not in data or 'maxLength' not in data:
         return jsonify({'status':'error','message':'内容、结局或最大长度参数不正确。请确保提供有效的小说内容、结局和最大长度。'}), 400
 
-    if 'api_key' not in session or 'base_url' not in session or 'model' not in session:
+    if 'api_key' not in session or 'baseUrl' not in session or 'model' not in session:
         return jsonify({'status':'error','message':'未配置 OpenAI API'}), 401
 
     api_key = session.get('api_key')
-    base_url = session.get('base_url')
+    base_url = session.get('baseUrl')
     model = session.get('model')
 
     prompt_instructions = f"""请根据以上文本和结局，生成一个完整的小说段落。请确保段落自然流畅，并且与提供的结局相符。字数约为{data['maxLength']}字。"""
