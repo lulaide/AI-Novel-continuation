@@ -4,11 +4,11 @@
 - React + Vite
 ### Setup
 1. Install dependencies
-```bash
+```shell
 npm install
 ```
 2. Start the development server
-```bash
+```shell
 npm run dev
 ```
 
@@ -18,10 +18,14 @@ npm run dev
 
 ###  Usage:
 
-`pip install -r requirements.txt`
+```shell
+pip install -r requirements.txt
+```
 
 ### Run the server
 
-`python main.py`
+```shell
+python main.py
+```
 
 ---
