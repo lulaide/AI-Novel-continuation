@@ -10,9 +10,9 @@ POST /api/v1/openaiapi
 Content-Type: application/json
 
 {
-    'baseUrl': 'https://api.openai.com/v1/models',
-    'model': 'gpt-3.5-turbo',
-    'apiKey': 'your_api_key_here'
+    "baseUrl": "https://api.openai.com/v1/models"
+    "model": "gpt-3.5-turbo",
+    "apiKey": "your_api_key_here"
 }
 ```
 ```http response
@@ -21,7 +21,6 @@ Content-Type: application/json
 
 {
     "status": "success",
-    "message": "成功设置 OpenAI API 配置。",
 }
 ```
 ```http response
@@ -83,6 +82,15 @@ Content-Type: application/json
 
 {
     "novel": "在遥远的魔法国度，有一座被岁月遗忘的彼岸花园。漫长的围墙上缠绕着紫红色的花藤，每一朵彼岸花都在月光下低声絮语。传说，花园中央的古井深不见底，井中封印着一段尘封的往事：勇者与魔王的最后一战。\n\n少年罗兰因梦中幻象来到此地。他推开生锈的铁门，踏上铺满落叶的石径。暮色中，幽光闪烁，一只银翼蝴蝶引他穿过迷宫般的花丛。蝴蝶振翅欲飞，却在古井边停下，似在指引。\n\n罗兰俯身向井中探望，却只见漆黑一片。他鼓起勇气，念出古老咒语。顷刻间，井底涌出蓝色雾气，化作一位身披银甲的少女。她映着月华，温柔却带着忧伤：“我是守护者，千年前为拯救王国献祭一切。若要解开封印，需集齐四朵彼岸之泪。”\n\n少女化作光点消散，雾气归于寂静。罗兰抬头，望向花海深处，那儿曳动着微弱光辉，仿佛在召唤。他握紧法杖，毅然踏上寻找之旅——穿越荆棘、对抗黑影、感受花语低吟……\n\n花园的秘密才刚刚揭开，罗兰的试炼才刚刚开始。他决意收集象征勇气、希望、牺牲与救赎的四滴花泪，将古井的封印彻底解开，让沉睡的守护者重返人间，也让魔法国度重获新生。"
+}
+```
+```http response
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "status": "error",
+    "message": "内容、结局或最大长度参数不正确。请确保提供有效的小说内容、结局和最大长度。",
 }
 ```
 ---

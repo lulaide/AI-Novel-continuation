@@ -25,7 +25,7 @@ def set_openai_api_key():
             model=session['model'],
             input="Test connection",
         )
-        return jsonify({'status': 'success', 'message': '成功设置 OpenAI API 配置。'}), 200
+        return jsonify({'status': 'success'}), 200
     except:
         return jsonify({'status': 'error', 'message': '无效的 OpenAI API 配置。请检查 baseUrl、model 和 apiKey 是否正确。'}), 400
 
@@ -37,8 +37,10 @@ def generate_novel_endings():
 
     if 'api_key' not in session or 'base_url' not in session or 'model' not in session:
         return jsonify({'status':'error','message':'未配置 OpenAI API'}), 401
+
     api_key = session.get('api_key')
     base_url = session.get('base_url')
+    model = session.get('model')
 
     prompt_instructions = """请为以上文本生成4个不同的结局。每个结局都应有独特的情节和风格。
     请将生成的4个结局组织成一个JSON对象。该JSON对象应包含一个名为 "endings" 的键，其值为一个包含4个结局字符串的列表。
@@ -55,18 +57,51 @@ def generate_novel_endings():
     }
     """
 
-    full_prompt = data['content']+prompt_instructions
+    full_prompt = data['content'] + prompt_instructions
 
     try:
         client = openai.OpenAI(base_url=base_url, api_key=api_key)
 
+        print('正在生成结局...')
         response = client.responses.create(
-            model=session['model'],
+            model=model,
             input=full_prompt,
         )
-        # 假设 response.choices[0].text 包含AI返回的JSON字符串
-        raw_json_output = response.choices[0].text.strip()
+        print('结局生成完成！')
+
+        raw_json_output = response.output_text.strip()
         parsed_data = json.loads(raw_json_output)
         return jsonify(parsed_data), 200
     except Exception as e:
+        return jsonify({'status':'error','message':'生成出错！请检查 OpenAI API 配置并重试。'}), 500
+
+@app.route('/api/v1/novel/continue', methods=['POST'])
+def generate_novel_continue():
+    data = request.get_json()
+    if not data or 'content' not in data or 'ending' not in data or 'maxLength' not in data:
+        return jsonify({'status':'error','message':'内容、结局或最大长度参数不正确。请确保提供有效的小说内容、结局和最大长度。'}), 400
+
+    if 'api_key' not in session or 'base_url' not in session or 'model' not in session:
+        return jsonify({'status':'error','message':'未配置 OpenAI API'}), 401
+
+    api_key = session.get('api_key')
+    base_url = session.get('base_url')
+    model = session.get('model')
+
+    prompt_instructions = f"""请根据以上文本和结局，生成一个完整的小说段落。请确保段落自然流畅，并且与提供的结局相符。字数约为{data['maxLength']}字。"""
+    full_prompt = '文本:' + data['content'] + '\n' + '结局' + data['ending'] + '\n' + prompt_instructions
+
+    try:
+        client = openai.OpenAI(base_url=base_url, api_key=api_key)
+
+        print('正在生成小说段落...')
+        response = client.responses.create(
+            model=model,
+            input=full_prompt,
+        )
+        print('小说段落生成完成！')
+
+        generated_text = response.output_text.strip()
+        return jsonify({'novel': generated_text}), 200
+    except:
         return jsonify({'status':'error','message':'生成出错！请检查 OpenAI API 配置并重试。'}), 500
