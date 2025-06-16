@@ -1,0 +1,450 @@
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f7f7f8; /* Very light gray, common in modern UIs */
+  color: #1f2937; /* Darker gray for text, good contrast */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure form elements inherit font */
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+#root {
+  width: 100%;
+  max-width: 900px; 
+  margin: 2rem 0 2rem 1.5rem; /* Changed from margin: 0 auto; to align left with a left margin */
+  padding: 2rem 1.5rem; 
+  text-align: left;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem; /* Increased gap for more separation */
+  padding-top: 2rem; /* Add some space at the top */
+  padding-bottom: 4rem; /* More space at the bottom */
+}
+
+h1 {
+  color: #111827; /* Even darker for main title */
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.25rem; /* Larger title */
+  font-weight: 600;
+}
+
+/* Settings Section */
+
+.settings-container h2 {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  color: #374151; /* Slightly lighter than main text */
+  font-size: 1.125rem; /* Subdued heading size */
+  font-weight: 500;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Increased gap */
+  margin-bottom: 1rem;
+}
+
+.setting-item label {
+  flex-basis: 130px; /* Slightly wider labels */
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.setting-item input[type="text"],
+.setting-item input[type="password"] {
+  flex-grow: 1;
+  padding: 0.75rem 1rem; 
+  border: 1px solid #d1d5db; 
+  border-radius: 8px; /* Updated from 6px to 8px */
+  font-size: 0.95rem;
+  background-color: #fff; 
+  color: #1f2937; /* Explicitly set text color */
+  box-sizing: border-box; /* Added for better box model control */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.setting-item input[type="text"]:focus,
+.setting-item input[type="password"]:focus {
+  border-color: #4f46e5; /* Claude-like purple/indigo for focus */
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+  outline: none;
+}
+
+.setting-item button {
+  padding: 0.7rem 1.2rem;
+  background-color: #4f46e5; /* Primary accent color */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.setting-item button:hover {
+  background-color: #4338ca; /* Darker shade on hover */
+}
+
+/* Novel Input Section */
+/* Styles for the main input area including textarea and action button */
+.novel-input-processing-area { /* Renamed from .novel-input-container */
+  display: flex;
+  align-items: flex-start; 
+  gap: 0.75rem;
+  /* margin-bottom: 1.5rem; /* This margin is handled by app-container gap or can be added if needed */
+}
+
+/* New wrapper for textarea and its potential placeholder to control their collective width */
+.novel-input-main-column {
+  flex-grow: 1; /* Allows this column to take available width */
+  display: flex;
+  flex-direction: column; /* Stacks textarea and placeholder vertically */
+}
+
+textarea {
+  /* flex-grow: 1; /* Removed, as width is now 100% of .novel-input-main-column */
+  width: 100%; /* Ensures textarea takes full width of its column parent */
+  padding: 1rem 1.25rem; 
+  border: 1px solid #d1d5db;
+  border-radius: 8px; 
+  font-size: 1rem;
+  /* min-height: 180px; Removed to allow natural sizing with field-sizing */
+  resize: none; /* Removed resize handle */
+  background-color: #fff;
+  color: #1f2937; 
+  box-sizing: border-box; 
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  white-space: pre-wrap; 
+  line-height: 1.6;
+  overflow-y: hidden; /* Hide scrollbar, content should expand */
+  field-sizing: content; /* Modern CSS for auto-sizing based on content */
+}
+
+textarea:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+  outline: none;
+}
+
+/* New class for textarea when placeholder is visible */
+textarea.textarea-connected-to-placeholder {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent; /* Make bottom border transparent to blend with placeholder */
+  /* transition: border-bottom-color 0.1s linear; /* Optional: smooth border color transition */
+}
+
+/* Placeholder styling for inputs and textarea */
+.setting-item input[type="text"]::placeholder,
+.setting-item input[type="password"]::placeholder,
+textarea::placeholder {
+  color: #9ca3af; /* Softer placeholder color */
+  opacity: 1; /* Ensure it's fully visible */
+}
+
+.arrow-button {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem; /* Adjusted padding for a more balanced height with new align-items */
+  font-size: 1.6rem; /* Slightly smaller arrow, more refined */
+  cursor: pointer;
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  transition: background-color 0.2s ease-in-out;
+  min-width: 56px; 
+  height: 50px; /* Explicit height to match typical input field heights */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.arrow-button:hover {
+  background-color: #4338ca;
+}
+
+.arrow-button:disabled {
+  background-color: #a5b4fc; /* Lighter, disabled purple */
+  cursor: not-allowed;
+}
+
+/* Endings Section */
+.endings-container h2 {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  color: #374151;
+  font-size: 1.125rem;
+  font-weight: 500;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.endings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Changed to 2 columns for 田 layout */
+  gap: 1.25rem; 
+  margin-bottom: 1.5rem;
+}
+
+.ending-card {
+  background-color: #fff; /* White background for cards */
+  padding: 1.25rem 1.5rem;
+  border: 1px solid #e5e7eb; /* Subtle border */
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease-in-out, transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.ending-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Softer shadow */
+  border-color: #c7d2fe; /* Lighter purple on hover */
+}
+
+.ending-card.selected {
+  border-color: #4f46e5; 
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+  background-color: #f0f5ff; /* Very light blue/purple tint for selected */
+}
+
+.generate-button {
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+  /* margin: 0 auto; /* Removed to allow left alignment if container is left aligned */
+  padding: 0.8rem 1.8rem;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.05rem; /* Slightly adjusted size */
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.generate-button:hover {
+  background-color: #4338ca;
+}
+
+.generate-button:disabled {
+  background-color: #a5b4fc;
+  cursor: not-allowed;
+}
+
+/* Loading and Error States */
+.loading-container { 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: #6b7280; /* Muted gray for loading text */
+}
+
+.loader { 
+  border: 4px solid #e5e7eb; /* Lighter gray for track */
+  border-top: 4px solid #4f46e5; /* Accent color for spinner */
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 0.8s linear infinite; /* Slightly faster spin */
+  margin-bottom: 1rem;
+}
+
+.loader-small { /* For the arrow button loading state */
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #fff; 
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 0.8s linear infinite;
+}
+
+.loader-inline {
+  border: 3px solid rgba(255, 255, 255, 0.4); 
+  border-top: 3px solid #fff; 
+  border-radius: 50%;
+  width: 16px; 
+  height: 16px;
+  animation: spin 0.8s linear infinite;
+  margin-left: 0.6rem; 
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  color: #991b1b; /* Darker red for error text */
+  background-color: #fee2e2; /* Lighter red background */
+  padding: 0.9rem 1.25rem;
+  border: 1px solid #fecaca; /* Softer red border */
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+/* Shimmer Placeholder Styles */
+.shimmer-container {
+  width: 100%;
+}
+
+.shimmer-line {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, #f0f2f5 8%, #e2e5e7 18%, #f0f2f5 33%); /* Adjusted shimmer colors for better visibility on white */
+  background-size: 1200px 100%; 
+  height: 1em; 
+  border-radius: 4px;
+  margin-bottom: 0.75em; 
+}
+
+.shimmer-line:last-child {
+  margin-bottom: 0;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1200px 0;
+  }
+  100% {
+    background-position: 1200px 0;
+  }
+}
+
+/* Styling for ending cards when loading */
+.ending-card.is-loading {
+  background-color: #fff; 
+  cursor: default;
+  border-color: #e5e7eb; 
+  pointer-events: none; /* Disable clicks on loading card */
+}
+
+.ending-card.is-loading:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #e5e7eb;
+}
+
+
+/* Placeholder for continuation text */
+.continuation-placeholder-wrapper {
+  background-color: #fff; /* Match textarea background */
+  border-left: 1px solid #d1d5db; /* Match textarea border */
+  border-right: 1px solid #d1d5db; /* Match textarea border */
+  border-bottom: 1px solid #d1d5db; /* Match textarea border */
+  /* No top border, it connects to the textarea */
+  border-radius: 0 0 8px 8px; /* Round bottom corners */
+  padding: 0 1.25rem; /* Horizontal padding, vertical padding will be animated */
+  margin-top: -1px; /* Crucial for seamless connection: pulls placeholder up to cover textarea's original border space */
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden; /* Important for max-height animation */
+  max-height: 0; /* Initial state for animation */
+  opacity: 0; /* Initial state for animation */
+  /* Smooth transition for expansion and fade-in */
+  transition: max-height 0.3s ease-out, padding-top 0.3s ease-out, padding-bottom 0.3s ease-out, opacity 0.2s ease-out 0.05s; /* Opacity fades in slightly after expansion starts */
+}
+
+.continuation-placeholder-wrapper.visible {
+  max-height: 120px; /* Estimated height for 3 shimmer lines + padding (e.g., 3 * (1em line + 0.75em margin) + 2 * 1rem padding) */
+  opacity: 1;
+  padding-top: 1rem; /* Animate in vertical padding */
+  padding-bottom: 1rem; /* Animate in vertical padding */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) { /* Adjusted breakpoint */
+  #root {
+    padding: 1.5rem 1rem;
+  }
+  .app-container {
+    gap: 2rem;
+  }
+  h1 {
+    font-size: 1.875rem;
+  }
+}
+
+@media (max-width: 600px) {
+  #root {
+    margin: 0; /* Remove horizontal margin on small screens */
+    padding: 1rem 0.75rem;
+  }
+
+  .app-container {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    gap: 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .setting-item label {
+    flex-basis: auto;
+    margin-bottom: 0.25rem;
+  }
+
+  .setting-item input[type="text"],
+  .setting-item input[type="password"],
+  .setting-item button {
+    width: 100%;
+    box-sizing: border-box; /* Ensure padding doesn't break layout */
+  }
+
+  .novel-input-processing-area { /* Renamed from .novel-input-container */
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .novel-input-main-column { /* Ensure this column also takes full width */
+    width: 100%;
+  }
+
+  .arrow-button {
+    width: 100%;
+    padding: 0.9rem;
+    margin-top: 0.25rem;
+    font-size: 1.5rem;
+  }
+
+  .endings-grid {
+    grid-template-columns: 1fr; /* Keep single column on very small screens for readability */
+    gap: 1rem;
+  }
+}
