@@ -22,8 +22,19 @@ def set_openai_api_key():
             base_url=session['baseUrl'],
             api_key=session['api_key'],
         )
-        # Attempt to list models to verify the connection and credentials
-        client.models.list()
+
+        response = client.chat.completions.create(
+            model=session['model'],
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant"},
+                {"role": "user", "content": "Connection test. Please respond with 'Connection successful'."},
+            ],
+            max_tokens=1024,
+            temperature=0.8,
+            stream=False
+        )
+
+        print(response.choices[0].message.content)
         return jsonify({'status': 'success'}), 200
     except Exception as e:
         print(f"Error testing OpenAI connection: {e}")
@@ -63,16 +74,23 @@ def generate_novel_endings():
         client = openai.OpenAI(base_url=base_url, api_key=api_key)
 
         print('正在生成结局...')
-        response = client.responses.create(
+        response = client.chat.completions.create(
             model=model,
-            input=full_prompt,
+            messages=[
+                {"role": "system", "content": "You are a novel assistant"},
+                {"role": "user", "content": full_prompt},
+            ],
+            max_tokens=8192,
+            temperature=0.8,
+            stream=False
         )
         print('结局生成完成！')
 
-        raw_json_output = response.output_text.strip()
+        raw_json_output = response.choices[0].message.content.strip()
         parsed_data = json.loads(raw_json_output)
         return jsonify(parsed_data), 200
     except Exception as e:
+        print(f"Error generating endings: {e}")
         return jsonify({'status':'error','message':'生成出错！请检查 OpenAI API 配置并重试。'}), 500
 
 @app.route('/api/v1/novel/continue', methods=['POST'])
@@ -88,22 +106,29 @@ def generate_novel_continue():
     base_url = session.get('baseUrl')
     model = session.get('model')
 
-    prompt_instructions = f"""请根据以上文本和结局，生成一个完整的小说段落。请确保段落自然流畅，并且与提供的结局相符。字数约为{data['maxLength']}字。"""
-    full_prompt = '文本:' + data['content'] + '\n' + '结局' + data['ending'] + '\n' + prompt_instructions
+    prompt_instructions = f"""请根据以上文本和结局，生成一个续写的小说段落（无需包含原有文本）。请确保段落自然流畅，并且与提供的结局相符。字数约为{data['maxLength']}字。"""
+    full_prompt = '文本:' + data['content'] + '\n' + '结局：' + data['ending'] + '\n' + prompt_instructions
 
     try:
         client = openai.OpenAI(base_url=base_url, api_key=api_key)
 
         print('正在生成小说段落...')
-        response = client.responses.create(
+        response = client.chat.completions.create(
             model=model,
-            input=full_prompt,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant"},
+                {"role": "user", "content": full_prompt},
+            ],
+            max_tokens=8192,
+            temperature=0.8,
+            stream=False
         )
         print('小说段落生成完成！')
 
-        generated_text = response.output_text.strip()
+        generated_text = response.choices[0].message.content.strip()
         return jsonify({'novel': generated_text}), 200
-    except:
+    except Exception as e:
+        print(f"Error generating novel continuation: {e}")
         return jsonify({'status':'error','message':'生成出错！请检查 OpenAI API 配置并重试。'}), 500
 
 if __name__ == '__main__':
