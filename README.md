@@ -4,28 +4,38 @@
 ---
 ## 后端
 ### API
-- 保存 OpenAI Key
-```
-POST /api/v1/openai/key
+- OpenAPI 
+```http request
+POST /api/v1/openaiapi
 Content-Type: application/json
 
 {
-    "apiKey": "sk-xxxx"
+    'baseUrl': 'https://api.openai.com/v1/models',
+    'model': 'gpt-3.5-turbo',
+    'apiKey': 'your_api_key_here'
 }
 ```
-
-- 保存 OpenAI base URL
-```
-POST /api/v1/openai/base-url
+```http response
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "baseUrl": "https://api.openai.com/v1"
+    "status": "success",
+    "message": "成功设置 OpenAI API 配置。",
 }
-
 ```
+```http response
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "status": "error",
+    "message": "无效的 OpenAI API 配置。请检查 baseUrl、model 和 apiKey 是否正确。",
+}
+```
+
 - 获取小说不同结局
-```
+```http request
 POST /api/v1/novel/endings
 Content-Type: application/json
 
@@ -33,7 +43,7 @@ Content-Type: application/json
     "content": "在遥远的魔法国度，有一座……",
 }
 ```
-```
+```http response
 HTTP/1.1 200 OK
 Content-Type: application/json
 
@@ -46,8 +56,18 @@ Content-Type: application/json
   ]
 }
 ```
-- 获取小说续写
+```http response
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "status": "error",
+    "message": "内容不能为空或格式不正确。请提供有效的小说内容。",
+}
 ```
+
+- 获取小说续写
+```http request
 POST /api/v1/novel/continue
 Content-Type: application/json
 
@@ -57,7 +77,7 @@ Content-Type: application/json
     "maxLength": 500
 }
 ```
-```
+```http response
 HTTP/1.1 200 OK
 Content-Type: application/json
 

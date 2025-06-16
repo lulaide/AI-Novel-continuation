@@ -1,0 +1,72 @@
+import os
+
+from flask import Flask, request, jsonify, session, json
+import openai
+
+app = Flask(__name__)
+app.secret_key = os.urandom(24)
+
+@app.route('/api/v1/openaiapi', methods=['POST'])
+def set_openai_api_key():
+    data = request.get_json()
+    if not data or 'apiKey' not in data or 'baseUrl' not in data or 'model' not in data:
+        return jsonify({'status':'error', 'message':'参数不能为空'}), 400
+
+    session['api_key'] = data['apiKey']
+    session['baseUrl'] = data['baseUrl']
+    session['model'] = data['model']
+
+    try:
+        client = openai.OpenAI(
+            base_url=session['baseUrl'],
+            api_key=session['api_key'],
+        )
+        client.responses.create(
+            model=session['model'],
+            input="Test connection",
+        )
+        return jsonify({'status': 'success', 'message': '成功设置 OpenAI API 配置。'}), 200
+    except:
+        return jsonify({'status': 'error', 'message': '无效的 OpenAI API 配置。请检查 baseUrl、model 和 apiKey 是否正确。'}), 400
+
+@app.route('/api/v1/novel/endings', methods=['POST'])
+def generate_novel_endings():
+    data = request.get_json()
+    if not data or 'content' not in data:
+        return jsonify({'status':'error','message':'内容不能为空或格式不正确。请提供有效的小说内容。'}), 400
+
+    if 'api_key' not in session or 'base_url' not in session or 'model' not in session:
+        return jsonify({'status':'error','message':'未配置 OpenAI API'}), 401
+    api_key = session.get('api_key')
+    base_url = session.get('base_url')
+
+    prompt_instructions = """请为以上文本生成4个不同的结局。每个结局都应有独特的情节和风格。
+    请将生成的4个结局组织成一个JSON对象。该JSON对象应包含一个名为 "endings" 的键，其值为一个包含4个结局字符串的列表。
+    请确保你的回答只包含这个JSON对象，没有任何其他文字或解释。
+
+    输出的JSON格式应严格如下（其中的结局文本会根据你的创作而变化）：
+    {
+        "endings": [
+            "罗兰举起银色法杖，点亮夜空，将园中黑影驱散，魔法国度重现生机。",
+            "彼岸花凋零之际，少女献出一滴泪水，唤回沉睡的灵魂，花园得以重生。",
+            "寒风中，骑士踏碎魔镜，以血肉之躯封印黑暗，王国迎来久违的曙光。",
+            "吟游诗人轻吟旧曲，旋律化为暖流，抚慰受伤心灵，爱与希望蔓延四方。"
+        ]
+    }
+    """
+
+    full_prompt = data['content']+prompt_instructions
+
+    try:
+        client = openai.OpenAI(base_url=base_url, api_key=api_key)
+
+        response = client.responses.create(
+            model=session['model'],
+            input=full_prompt,
+        )
+        # 假设 response.choices[0].text 包含AI返回的JSON字符串
+        raw_json_output = response.choices[0].text.strip()
+        parsed_data = json.loads(raw_json_output)
+        return jsonify(parsed_data), 200
+    except Exception as e:
+        return jsonify({'status':'error','message':'生成出错！请检查 OpenAI API 配置并重试。'}), 500
